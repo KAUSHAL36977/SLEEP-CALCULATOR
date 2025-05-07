@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DreamCycle | AI-Powered Sleep Optimizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7b2cbf;
+            --primary-light: #9d4edd;
+            --secondary: #4cc9f0;
+            --accent: #ff7096;
+            --text: #2b2d42;
+            --text-light: #8d99ae;
+            --bg: #f8f9fa;
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --card-border: rgba(255, 255, 255, 0.3);
+            --shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --glass: rgba(255, 255, 255, 0.2);
+            --success: #38b000;
+            --warning: #ffaa00;
+            --danger: #ef233c;
+        }
+
+        .dark-mode {
+            --primary: #c77dff;
+            --primary-light: #e0aaff;
+            --secondary: #4cc9f0;
+            --accent: #ff7096;
+            --text: #f8f9fa;
+            --text-light: #adb5bd;
+            --bg: #121212;
+            --card-bg: rgba(30, 30, 30, 0.92);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            --glass: rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(at 80% 0%, hsla(271, 100%, 50%, 0.1) 0, transparent 50%),
+                radial-gradient(at 0% 50%, hsla(189, 100%, 56%, 0.1) 0, transparent 50%);
+            transition: var(--transition);
+        }
+
+        @supports (font-variation-settings: normal) {
+            body { font-family: 'Inter var', -apple-system, BlinkMacSystemFont, sans-serif; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            animation: float 6s ease-in-out infinite;
+            filter: drop-shadow(0 4px 12px rgba(123, 44, 191, 0.3));
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .app-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Calculator Card */
+        .calculator-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            transition: var(--transition);
+            position: sticky;
+            top: 2rem;
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Tabs */
+        .tabs-container {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab-indicator {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 3px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 0;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 1;
+            font-size: 0.95rem;
+        }
+
+        .tab i {
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            color: var(--primary);
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(123, 44, 191, 0.05);
+            color: var(--primary);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        select, input {
+            padding: 0.85rem 1.25rem;
+            border-radius: 12px;
+            border: 1px solid rgba(123, 44, 191, 0.2);
+            background: var(--card-bg);
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+            flex: 1;
+            font-family: inherit;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(123, 44, 191, 0.2);
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238d99ae' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(45deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 1.1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 20px rgba(123, 44, 191, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(123, 44, 191, 0.4);
+        }
+
+        .btn:hover::after {
+            transform: translateX(100%);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-sleep-now {
+            background: linear-gradient(45deg, var(--accent), #ff8fab);
+            box-shadow: 0 4px 20px rgba(255, 112, 150, 0.3);
+        }
+
+        .btn-sleep-now:hover {
+            box-shadow: 0 8px 30px rgba(255, 112, 150, 0.4);
+        }
+
+        /* Results */
+        .results {
+            margin-top: 2rem;
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .results.active {
+            opacity: 1;
+            height: auto;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .results-description {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        /* Time Cards Grid */
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .time-card {
+            background: linear-gradient(135deg, rgba(123, 44, 191, 0.05), rgba(76, 201, 240, 0.05));
+            border: 1px solid rgba(123, 44, 191, 0.1);
+            border-radius: 16px;
+            padding: 1.75rem 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .time-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .time-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(123, 44, 191, 0.1);
+            border-color: rgba(123, 44, 191, 0.2);
+        }
+
+        .time-card:hover::before {
+            opacity: 1;
+        }
+
+        .time-card h4 {
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .time-card p {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .time-card small {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .quality-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1rem;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .quality-excellent {
+            color: var(--success);
+        }
+
+        .quality-good {
+            color: var(--secondary);
+        }
+
+        .quality-fair {
+            color: var(--warning);
+        }
+
+        /* Visualization Panel */
+        .visualization-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            height: 100%;
+            min-height: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visualization-header {
+            margin-bottom: 2rem;
+        }
+
+        .visualization-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .visualization-subtitle {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        .sleep-cycle-chart {
+            width: 100%;
+            height: 400px;
+            margin-top: 2rem;
+            position: relative;
+        }
+
+        .chart-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        .chart-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            opacity: 0.7;
+        }
+
+        .chart-placeholder p {
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Sleep Stages Info */
+        .sleep-stages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .stage-card {
+            background: rgba(123, 44, 191, 0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .stage-card:hover {
+            transform: translateY(-5px);
+            background: rgba(123, 44, 191, 0.1);
+        }
+
+        .stage-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .stage-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(123, 44, 191, 0.1);
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .stage-title {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .stage-duration {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .stage-description {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(30deg);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-toggle i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            transition: var(--transition);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .calculator-card {
+                position: static;
+                padding: 1.5rem;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                scrollbar-width: none;
+            }
+            
+            .tabs::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .tab {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+            
+            .time-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .theme-toggle {
+                bottom: 1rem;
+                right: 1rem;
+                width: 48px;
+                height: 48px;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-moon logo-icon"></i>
+                <h1>DreamCycle</h1>
+            </div>
+            <p class="subtitle">Harness the power of sleep science to optimize your rest and wake up refreshed every morning</p>
+        </header>
+
+        <div class="app-grid">
+            <div class="calculator-card">
+                <div class="tabs-container">
+                    <div class="tabs">
+                        <button class="tab active" data-tab="bedtime">
+                            <i class="fas fa-alarm-clock"></i> Wake Up At
+                        </button>
+                        <button class="tab" data-tab="wakeup">
+                            <i class="fas fa-bed"></i> Bedtime At
+                        </button>
+                        <button class="tab" data-tab="sleep-now">
+                            <i class="fas fa-stopwatch"></i> Sleep Now
+                        </button>
+                        <div class="tab-indicator" style="width: 120px; transform: translateX(0px);"></div>
+                    </div>
+                </div>
+
+                <div class="tab-content active" id="bedtime-calc">
+                    <div class="form-group">
+                        <label>Select your wake-up time:</label>
+                        <div class="input-group">
+                            <select id="bedtime-hour">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8" selected>8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                            <select id="bedtime-minute">
+                                <option value="00" selected>00</option>
+                                <option value="05">05</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            <select id="bedtime-ampm">
+                                <option value="AM" selected>AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Time to fall asleep:</label>
+                        <select id="fall-asleep-time">
+                            <option value="10">10 minutes</option>
+                            <option value="15" selected>15 minutes</option>
+                            <option value="20">20 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                        </select>
+                    </div>
+
+                    <button id="calc-bedtime" class="btn">
+                        <i class="fas fa-calculator"></i> Calculate Bedtime
+                    </button>
+
+                    <div class="results" id="bedtime-results">
+                        <div class="results-header">
+                            <h3 class="results-title">
+                                <i class="fas fa-bed"></i> Optimal Bedtimes
+                            </h3>
+                        </div>
+                        <p class="results-description">For your selected wake-up time, these bedtimes will help you complete full sleep cycles:</p>
+                        
+                        <div class="time-grid" id="bedtime-list"></div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="wakeup-calc">
+                    <div class="form-group">
+                        <label>Select your bedtime:</label>
+                        <div class="input-group">
+                            <select id="wakeup-hour">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12" selected>12</option>
+                            </select>
+                            <select id="wakeup-minute">
+                                <option value="00" selected>00</option>
+                                <option value="05">05</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            <select id="wakeup-ampm">
+                                <option value="AM">AM</option>
+                                <option value="PM" selected>PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Time to fall asleep:</label>
+                        <select id="fall-asleep-time-wake">
+                            <option value="10">10 minutes</option>
+                            <option value="15" selected>15 minutes</option>
+                            <option value="20">20 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                        </select>
+                    </div>
+
+                    <button id="calc-wakeup" class="btn">
+                        <i class="fas fa-calculator"></i> Calculate Wake-up Time
+                    </button>
+
+                    <div class="results" id="wakeup-results">
+                        <div class="results-header">
+                            <h3 class="results-title">
+                                <i class="fas fa-clock"></i> Optimal Wake-up Times
+                            </h3>
+                        </div>
+                        <p class="results-description">For your selected bedtime, these wake-up times will help you complete full sleep cycles:</p>
+                        
+                        <div class="time-grid" id="wakeup-list"></div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="sleep-now-calc">
+                    <div class="form-group">
+                        <label>Time to fall asleep:</label>
+                        <select id="fall-asleep-time-now">
+                            <option value="10">10 minutes</option>
+                            <option value="15" selected>15 minutes</option>
+                            <option value="20">20 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                        </select>
+                    </div>
+
+                    <button id="calc-sleep-now" class="btn btn-sleep-now">
+                        <i class="fas fa-moon"></i> Calculate Sleep Now Times
+                    </button>
+
+                    <div class="results" id="sleep-now-results">
+                        <div class="results-header">
+                            <h3 class="results-title">
+                                <i class="fas fa-clock"></i> Optimal Wake-up Times
+                            </h3>
+                        </div>
+                        <p class="results-description">Based on the current time, these wake-up times will help you complete full sleep cycles:</p>
+                        
+                        <div class="time-grid" id="sleep-now-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="visualization-panel">
+                <div class="visualization-header">
+                    <h3 class="visualization-title">
+                        <i class="fas fa-chart-line"></i> Sleep Cycle Visualization
+                    </h3>
+                    <p class="visualization-subtitle">Your personalized sleep cycle analysis will appear here after calculation</p>
+                </div>
+
+                <div class="sleep-cycle-chart">
+                    <div class="chart-placeholder">
+                        <i class="fas fa-moon"></i>
+                        <h4>No Data Yet</h4>
+                        <p>Calculate your sleep times to see a detailed visualization of your sleep cycles and stages</p>
+                    </div>
+                </div>
+
+                <div class="sleep-stages">
+                    <div class="stage-card">
+                        <div class="stage-header">
+                            <div class="stage-icon">
+                                <i class="fas fa-cloud-moon"></i>
+                            </div>
+                            <div>
+                                <h4 class="stage-title">Light Sleep</h4>
+                                <p class="stage-duration">50-60% of night</p>
+                            </div>
+                        </div>
+                        <p class="stage-description">Transition phase between wakefulness and sleep. Easy to wake from.</p>
+                    </div>
+
+                    <div class="stage-card">
+                        <div class="stage-header">
+                            <div class="stage-icon">
+                                <i class="fas fa-moon"></i>
+                            </div>
+                            <div>
+                                <h4 class="stage-title">Deep Sleep</h4>
+                                <p class="stage-duration">10-25% of night</p>
+                            </div>
+                        </div>
+                        <p class="stage-description">Crucial for physical restoration and immune function.</p>
+                    </div>
+
+                    <div class="stage-card">
+                        <div class="stage-header">
+                            <div class="stage-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div>
+                                <h4 class="stage-title">REM Sleep</h4>
+                                <p class="stage-duration">20-25% of night</p>
+                            </div>
+                        </div>
+                        <p class="stage-description">Essential for memory consolidation and emotional processing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="theme-toggle" id="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // System theme detection
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedTheme = localStorage.getItem('theme');
+            
+            // Apply saved theme or system preference
+            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                document.body.classList.add('dark-mode');
+                document.querySelector('#theme-toggle i').className = 'fas fa-sun';
+            }
+
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    document.body.classList.toggle('dark-mode');
+                    const icon = this.querySelector('i');
+                    
+                    // Update icon and save preference
+                    if (document.body.classList.contains('dark-mode')) {
+                        icon.className = 'fas fa-sun';
+                        localStorage.setItem('theme', 'dark');
+                    } else {
+                        icon.className = 'fas fa-moon';
+                        localStorage.setItem('theme', 'light');
+                    }
+                });
+            }
+
+            // Tab switching functionality with indicator animation
+            const tabs = document.querySelectorAll('.tab');
+            const tabIndicator = document.querySelector('.tab-indicator');
+            
+            function moveIndicator(activeTab) {
+                const tabRect = activeTab.getBoundingClientRect();
+                const tabsRect = activeTab.parentElement.getBoundingClientRect();
+                const left = tabRect.left - tabsRect.left;
+                const width = tabRect.width;
+                
+                tabIndicator.style.width = `${width}px`;
+                tabIndicator.style.transform = `translateX(${left}px)`;
+            }
+
+            // Initialize indicator position
+            const activeTab = document.querySelector('.tab.active');
+            if (activeTab && tabIndicator) {
+                moveIndicator(activeTab);
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs and contents
+                    document.querySelectorAll('.tab, .tab-content').forEach(el => {
+                        el.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    const targetTab = this.getAttribute('data-tab');
+                    document.getElementById(`${targetTab}-calc`).classList.add('active');
+                    
+                    // Move indicator
+                    moveIndicator(this);
+                });
+            });
+
+            // Time calculation functions
+            function parseTime(hour, minute, ampm) {
+                let hours = parseInt(hour);
+                if (ampm === 'PM' && hours !== 12) hours += 12;
+                if (ampm === 'AM' && hours === 12) hours = 0;
+                return hours * 60 + parseInt(minute);
+            }
+
+            function formatTime(minutes) {
+                // Handle negative times (crossing midnight)
+                if (minutes < 0) minutes += 1440;
+                minutes = minutes % 1440;
+                
+                const hrs = Math.floor(minutes / 60) % 24;
+                const mins = minutes % 60;
+                const ampm = hrs >= 12 ? 'PM' : 'AM';
+                const formattedHrs = hrs % 12 || 12;
+                return `${formattedHrs}:${mins.toString().padStart(2, '0')} ${ampm}`;
+            }
+
+            function calculateCycles(baseTime, fallAsleep, isBedtimeCalc) {
+                const cycleDuration = 90;
+                const totalFallAsleep = parseInt(fallAsleep);
+                const results = [];
+                
+                for (let cycles = 6; cycles >= 4; cycles--) {
+                    const totalMinutes = (cycles * cycleDuration) + totalFallAsleep;
+                    const targetTime = isBedtimeCalc ? 
+                        baseTime - totalMinutes : 
+                        baseTime + totalMinutes;
+                        
+                    results.push({
+                        time: formatTime(targetTime),
+                        cycles: cycles,
+                        totalHours: (cycles * 1.5).toFixed(1),
+                        quality: cycles >= 6 ? 'excellent' : cycles >= 5 ? 'good' : 'fair',
+                        totalMinutes: cycles * 90
+                    });
+                }
+                return results;
+            }
+
+            // Loading state for buttons
+            function setLoading(button, isLoading) {
+                const icon = button.querySelector('i');
+                if (isLoading) {
+                    button.disabled = true;
+                    icon.style.display = 'none';
+                    button.innerHTML += '<span class="loading" style="margin-left: 8px;"></span>';
+                } else {
+                    button.disabled = false;
+                    icon.style.display = 'inline-block';
+                    button.querySelector('.loading')?.remove();
+                }
+            }
+
+            // Bedtime calculation
+            const calcBedtimeBtn = document.getElementById('calc-bedtime');
+            if (calcBedtimeBtn) {
+                calcBedtimeBtn.addEventListener('click', function() {
+                    setLoading(this, true);
+                    
+                    // Simulate calculation delay
+                    setTimeout(() => {
+                        const hour = document.getElementById('bedtime-hour').value;
+                        const minute = document.getElementById('bedtime-minute').value;
+                        const ampm = document.getElementById('bedtime-ampm').value;
+                        const fallAsleep = document.getElementById('fall-asleep-time').value;
+                        
+                        const wakeTime = parseTime(hour, minute, ampm);
+                        const results = calculateCycles(wakeTime, fallAsleep, true);
+                        
+                        displayResults(results, '#bedtime-list');
+                        document.getElementById('bedtime-results').classList.add('active');
+                        updateVisualization(results);
+                        setLoading(this, false);
+                    }, 500);
+                });
+            }
+
+            // Wake-up time calculation
+            const calcWakeupBtn = document.getElementById('calc-wakeup');
+            if (calcWakeupBtn) {
+                calcWakeupBtn.addEventListener('click', function() {
+                    setLoading(this, true);
+                    
+                    setTimeout(() => {
+                        const hour =
