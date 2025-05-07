@@ -157,4 +157,59 @@
     }
 </script>
 </body>
+<!-- Add this right before the closing </body> tag -->
+            </div>
+            
+            <div class="time-list" id="wakeup-list"></div>
+        </div>
+    </div>
+
+    <div class="calc-content" id="sleep-now-calc">
+        <button id="calc-sleep-now" class="sleep-now-btn"><i class="fas fa-moon"></i> Calculate Sleep Now Times</button>
+        
+        <div class="results" id="sleep-now-results">
+            <h3><i class="fas fa-clock"></i> You should wake up at one of these times:</h3>
+            <p>Based on the current time, here are your optimal wake-up times:</p>
+            <div class="time-list" id="sleep-now-list"></div>
+        </div>
+    </div>
+
+    <div class="calc-content" id="age-calc">
+        <div class="age-recommendations" id="age-recommendations"></div>
+    </div>
+
+    <div class="calc-content" id="quality-calc">
+        <div class="sleep-quality-section">
+            <h3><i class="fas fa-star"></i> Sleep Quality Assessment</h3>
+            <p>Answer these questions to evaluate your sleep quality:</p>
+            
+            <div class="quality-questions">
+                <div class="quality-question">
+                    <p>1. How long does it usually take you to fall asleep?</p>
+                    <div class="quality-options">
+                        <div class="quality-option" data-value="5">Less than 15 min</div>
+                        <div class="quality-option" data-value="4">15-30 min</div>
+                        <div class="quality-option" data-value="3">30-60 min</div>
+                        <div class="quality-option" data-value="1">More than 60 min</div>
+                    </div>
+                </div>
+                
+                <!-- Add more questions similarly -->
+            </div>
+            
+            <div class="quality-result">
+                <h4>Your Sleep Quality Score</h4>
+                <div class="quality-score">0/25</div>
+                <div class="quality-recommendations">
+                    <h5>Recommendations:</h5>
+                    <ul>
+                        <li>Maintain consistent sleep schedule</li>
+                        <li>Avoid caffeine before bedtime</li>
+                        <li>Create a relaxing bedtime routine</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </html>
