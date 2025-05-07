@@ -1,0 +1,160 @@
+<script>
+    // Tab Switching Logic
+    document.querySelectorAll('.calc-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const targetTab = tab.dataset.tab;
+            document.querySelectorAll('.calc-tab, .calc-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            tab.classList.add('active');
+            document.getElementById(`${targetTab}-calc`).classList.add('active');
+        });
+    });
+
+    // Dark Mode Toggle
+    document.getElementById('dark-mode-toggle').addEventListener('change', (e) => {
+        document.body.classList.toggle('dark-mode', e.target.checked);
+    });
+
+    // Time Calculation Functions
+    function parseTime(hour, minute, ampm) {
+        let hours = parseInt(hour);
+        if (ampm === 'PM' && hours !== 12) hours += 12;
+        if (ampm === 'AM' && hours === 12) hours = 0;
+        return hours * 60 + parseInt(minute);
+    }
+
+    function formatTime(minutes) {
+        const hrs = Math.floor(minutes / 60) % 24;
+        const mins = minutes % 60;
+        const ampm = hrs >= 12 ? 'PM' : 'AM';
+        const formattedHrs = hrs % 12 || 12;
+        return `${formattedHrs}:${mins.toString().padStart(2, '0')} ${ampm}`;
+    }
+
+    function calculateCycles(baseTime, fallAsleep, isBedtimeCalc) {
+        const cycleDuration = 90; // minutes per sleep cycle
+        const totalFallAsleep = parseInt(fallAsleep);
+        const results = [];
+        
+        for (let cycles = 6; cycles >= 4; cycles--) {
+            const totalMinutes = (cycles * cycleDuration) + totalFallAsleep;
+            const targetTime = isBedtimeCalc ? 
+                baseTime - totalMinutes : 
+                baseTime + totalMinutes;
+                
+            results.push({
+                time: formatTime(targetTime),
+                cycles: cycles,
+                quality: cycles >= 6 ? 'excellent' : cycles >= 5 ? 'good' : 'fair'
+            });
+        }
+        return results;
+    }
+
+    // Bedtime Calculation
+    document.getElementById('calc-bedtime').addEventListener('click', () => {
+        const hour = document.getElementById('bedtime-hour').value;
+        const minute = document.getElementById('bedtime-minute').value;
+        const ampm = document.getElementById('bedtime-ampm').value;
+        const fallAsleep = document.getElementById('fall-asleep-time').value;
+        
+        const wakeTime = parseTime(hour, minute, ampm);
+        const results = calculateCycles(wakeTime, fallAsleep, true);
+        
+        displayResults(results, 'bedtime-list');
+        document.getElementById('bedtime-results').style.display = 'block';
+    });
+
+    // Wake-up Time Calculation
+    document.getElementById('calc-wakeup').addEventListener('click', () => {
+        const hour = document.getElementById('wakeup-hour').value;
+        const minute = document.getElementById('wakeup-minute').value;
+        const ampm = document.getElementById('wakeup-ampm').value;
+        const fallAsleep = document.getElementById('fall-asleep-time-wake').value;
+        
+        const bedTime = parseTime(hour, minute, ampm);
+        const results = calculateCycles(bedTime, fallAsleep, false);
+        
+        displayResults(results, 'wakeup-results .time-list');
+        document.getElementById('wakeup-results').style.display = 'block';
+    });
+
+    // Sleep Now Calculation
+    document.querySelector('[data-tab="sleep-now"]').addEventListener('click', () => {
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const results = calculateCycles(currentMinutes, 15, false);
+        
+        displayResults(results, 'sleep-now-results .time-list');
+        document.getElementById('sleep-now-results').style.display = 'block';
+    });
+
+    // Display Results
+    function displayResults(results, containerSelector) {
+        const container = document.querySelector(containerSelector);
+        container.innerHTML = '';
+        
+        results.forEach(res => {
+            const qualityIcon = {
+                excellent: '<i class="fas fa-star quality-indicator quality-excellent"></i>',
+                good: '<i class="fas fa-thumbs-up quality-indicator quality-good"></i>',
+                fair: '<i class="fas fa-exclamation-triangle quality-indicator quality-fair"></i>'
+            }[res.quality];
+
+            const timeItem = document.createElement('div');
+            timeItem.className = 'time-item';
+            timeItem.innerHTML = `
+                ${qualityIcon}
+                <h4>${res.cycles} Cycles (${res.cycles * 1.5} hrs)</h4>
+                <p>${res.time}</p>
+            `;
+            container.appendChild(timeItem);
+        });
+    }
+
+    // Age Recommendations
+    const ageRecommendations = [
+        { range: 'Newborn (0-3 months)', duration: '14-17 hours' },
+        { range: 'Infant (4-11 months)', duration: '12-15 hours' },
+        { range: 'Toddler (1-2 years)', duration: '11-14 hours' },
+        { range: 'Preschool (3-5 years)', duration: '10-13 hours' },
+        { range: 'School Age (6-13 years)', duration: '9-11 hours' },
+        { range: 'Teen (14-17 years)', duration: '8-10 hours' },
+        { range: 'Adult (18-64 years)', duration: '7-9 hours' },
+        { range: 'Senior (65+ years)', duration: '7-8 hours' }
+    ];
+
+    document.querySelector('[data-tab="age"]').addEventListener('click', () => {
+        const container = document.getElementById('age-recommendations');
+        container.innerHTML = ageRecommendations.map(age => `
+            <div class="age-card">
+                <h3>${age.range}</h3>
+                <p>${age.duration}</p>
+                <small>Recommended daily sleep</small>
+            </div>
+        `).join('');
+    });
+
+    // Sleep Quality Assessment
+    let qualityScore = 0;
+    document.querySelectorAll('.quality-option').forEach(option => {
+        option.addEventListener('click', () => {
+            option.classList.toggle('selected');
+            const value = parseInt(option.dataset.value) || 0;
+            qualityScore += option.classList.contains('selected') ? value : -value;
+            updateQualityResult();
+        });
+    });
+
+    function updateQualityResult() {
+        const resultDiv = document.querySelector('.quality-result');
+        const scoreDiv = resultDiv.querySelector('.quality-score');
+        const maxScore = 25;
+        
+        scoreDiv.textContent = `${qualityScore}/${maxScore}`;
+        resultDiv.style.display = 'block';
+    }
+</script>
+</body>
+</html>
