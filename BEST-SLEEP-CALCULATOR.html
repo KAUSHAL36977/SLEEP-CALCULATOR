@@ -466,18 +466,30 @@
                         <label>Select your wake-up time:</label>
                         <div class="input-group">
                             <select id="bedtime-hour">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8" selected>8</option>
-                                <option value="9">9</option>
+                                <option value="00">00</option>
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08" selected>08</option>
+                                <option value="09">09</option>
                                 <option value="10">10</option>
                                 <option value="11">11</option>
                                 <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23">23</option>
                             </select>
                             <select id="bedtime-minute">
                                 <option value="00" selected>00</option>
@@ -492,10 +504,6 @@
                                 <option value="45">45</option>
                                 <option value="50">50</option>
                                 <option value="55">55</option>
-                            </select>
-                            <select id="bedtime-ampm">
-                                <option value="AM" selected>AM</option>
-                                <option value="PM">PM</option>
                             </select>
                         </div>
                     </div>
@@ -526,18 +534,30 @@
                         <label>Select your bedtime:</label>
                         <div class="input-group">
                             <select id="wakeup-hour">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
+                                <option value="00">00</option>
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08">08</option>
+                                <option value="09">09</option>
                                 <option value="10">10</option>
                                 <option value="11">11</option>
-                                <option value="12" selected>12</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23" selected>23</option>
                             </select>
                             <select id="wakeup-minute">
                                 <option value="00" selected>00</option>
@@ -552,10 +572,6 @@
                                 <option value="45">45</option>
                                 <option value="50">50</option>
                                 <option value="55">55</option>
-                            </select>
-                            <select id="wakeup-ampm">
-                                <option value="AM">AM</option>
-                                <option value="PM" selected>PM</option>
                             </select>
                         </div>
                     </div>
@@ -786,12 +802,10 @@
                 });
             });
             // Time calculation functions
-            function parseTime(hour, minute, ampm) {
-                let hours = parseInt(hour);
-                if (ampm === 'PM' && hours !== 12) hours += 12;
-                if (ampm === 'AM' && hours === 12) hours = 0;
-                return hours * 60 + parseInt(minute);
+            function parseTime(hour, minute) {
+                return parseInt(hour) * 60 + parseInt(minute);
             }
+
             function formatTime(minutes) {
                 if (minutes < 0) minutes += 1440;
                 minutes = minutes % 1440;
@@ -801,6 +815,15 @@
                 const formattedHrs = hrs % 12 || 12;
                 return `${formattedHrs}:${mins.toString().padStart(2, '0')} ${ampm}`;
             }
+
+            function formatTime24(minutes) {
+                if (minutes < 0) minutes += 1440;
+                minutes = minutes % 1440;
+                const hrs = Math.floor(minutes / 60) % 24;
+                const mins = minutes % 60;
+                return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+            }
+
             function calculateCycles(baseTime, fallAsleep, isBedtimeCalc) {
                 const cycleDuration = 90;
                 const totalFallAsleep = parseInt(fallAsleep);
@@ -825,9 +848,8 @@
                 calcBedtimeBtn.addEventListener('click', function() {
                     const hour = document.getElementById('bedtime-hour').value;
                     const minute = document.getElementById('bedtime-minute').value;
-                    const ampm = document.getElementById('bedtime-ampm').value;
                     const fallAsleep = document.getElementById('fall-asleep-time').value;
-                    const wakeTime = parseTime(hour, minute, ampm);
+                    const wakeTime = parseTime(hour, minute);
                     const results = calculateCycles(wakeTime, fallAsleep, true);
                     displayResults(results, '#bedtime-list');
                     document.getElementById('bedtime-results').classList.add('active');
@@ -840,9 +862,8 @@
                 calcWakeupBtn.addEventListener('click', function() {
                     const hour = document.getElementById('wakeup-hour').value;
                     const minute = document.getElementById('wakeup-minute').value;
-                    const ampm = document.getElementById('wakeup-ampm').value;
                     const fallAsleep = document.getElementById('fall-asleep-time-wake').value;
-                    const bedTime = parseTime(hour, minute, ampm);
+                    const bedTime = parseTime(hour, minute);
                     const results = calculateCycles(bedTime, fallAsleep, false);
                     displayResults(results, '#wakeup-list');
                     document.getElementById('wakeup-results').classList.add('active');
