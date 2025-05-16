@@ -829,42 +829,136 @@
             },
 
             displayResults(recommendations) {
-                const visualizationDiv = document.getElementById('nap-visualization');
-                if (!visualizationDiv) return;
+    const visualizationDiv = document.getElementById('nap-visualization');
+    if (!visualizationDiv) return;
 
-                const napHour = parseInt(document.getElementById('nap-hour').value);
-                const napMinute = parseInt(document.getElementById('nap-minute').value);
-                const lastNightSleep = parseFloat(document.getElementById('last-night-sleep').value);
-                const currentEnergy = document.querySelector('.quality-btn.active')?.dataset.rating || 3;
+    const napHour = parseInt(document.getElementById('nap-hour').value);
+    const napMinute = parseInt(document.getElementById('nap-minute').value);
+    const lastNightSleep = parseFloat(document.getElementById('last-night-sleep').value);
+    const currentEnergy = document.querySelector('.quality-btn.active')?.dataset.rating || 3;
 
-                // Calculate nap end time
-                const napDuration = recommendations.duration.split('-')[0].trim(); // Get first number from duration
-                const endTime = new Date();
-                endTime.setHours(napHour, napMinute + parseInt(napDuration), 0);
-                const endTimeStr = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    // Calculate nap end time
+    const napDuration = recommendations.duration.split('-')[0].trim(); // Get first number from duration
+    const endTime = new Date();
+    endTime.setHours(napHour, napMinute + parseInt(napDuration), 0);
+    const endTimeStr = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                // Format start time
-                const startTime = new Date();
-                startTime.setHours(napHour, napMinute, 0);
-                const startTimeStr = startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    // Format start time
+    const startTime = new Date();
+    startTime.setHours(napHour, napMinute, 0);
+    const startTimeStr = startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                visualizationDiv.innerHTML = `
-                    <div class="nap-recommendation">
-                        <h4><i class="fas fa-clock"></i> Nap Schedule</h4>
-                        <div class="nap-schedule">
-                            <div class="schedule-item">
-                                <span class="label">Start Time:</span>
-                                <span class="value">${startTimeStr}</span>
-                            </div>
-                            <div class="schedule-item">
-                                <span class="label">End Time:</span>
-                                <span class="value">${endTimeStr}</span>
-                            </div>
-                            <div class="schedule-item">
-                                <span class="label">Duration:</span>
-                                <span class="value">${recommendations.duration}</span>
-                            </div>
-                        </div>
+    visualizationDiv.innerHTML = `
+        <div class="nap-recommendation">
+            <h4><i class="fas fa-clock"></i> Nap Schedule</h4>
+            <div class="nap-schedule">
+                <div class="schedule-item">
+                    <span class="label">Start Time:</span>
+                    <span class="value">${startTimeStr}</span>
+                </div>
+                <div class="schedule-item">
+                    <span class="label">End Time:</span>
+                    <span class="value">${endTimeStr}</span>
+                </div>
+                <div class="schedule-item">
+                    <span class="label">Duration:</span>
+                    <span class="value">${recommendations.duration}</span>
+                </div>
+            </div>
+        </div>
+        <div class="nap-recommendation">
+            <h4><i class="fas fa-chart-line"></i> Sleep Analysis</h4>
+            <div class="sleep-analysis">
+                <div class="analysis-item">
+                    <span class="label">Last Night's Sleep:</span>
+                    <span class="value">${lastNightSleep} hours</span>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: ${(lastNightSleep/10) * 100}%"></div>
                     </div>
-                    <div class="nap-recommendation">
-                        <h4><i class="fas
+                </div>
+                <div class="analysis-item">
+                    <span class="label">Current Energy Level:</span>
+                    <span class="value">${currentEnergy}/5</span>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: ${(currentEnergy/5) * 100}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="nap-recommendation">
+            <h4><i class="fas fa-calendar-check"></i> Timing Assessment</h4>
+            <p>${recommendations.timing}</p>
+            <div class="timing-chart">
+                <div class="timing-bar">
+                    <div class="optimal-zone" style="left: 54.16%; width: 8.33%;"></div>
+                    <div class="current-time" style="left: ${(napHour/24) * 100}%"></div>
+                </div>
+                <div class="timing-labels">
+                    <span>6 AM</span>
+                    <span>12 PM</span>
+                    <span>6 PM</span>
+                    <span>12 AM</span>
+                </div>
+            </div>
+        </div>
+        <div class="nap-recommendation">
+            <h4><i class="fas fa-list-check"></i> Nap Duration Guide</h4>
+            <div class="nap-durations">
+                <div class="duration-card ${parseInt(napDuration) <= 20 ? 'active' : ''}">
+                    <div class="duration-header">
+                        <i class="fas fa-bolt"></i>
+                        <h5>Power Nap (10-20 min)</h5>
+                    </div>
+                    <p>Quick energy boost, no grogginess</p>
+                    <ul>
+                        <li>Light sleep stages (N1 & N2)</li>
+                        <li>Best for alertness</li>
+                        <li>Easy to wake from</li>
+                    </ul>
+                </div>
+                <div class="duration-card ${parseInt(napDuration) === 30 ? 'active' : ''}">
+                    <div class="duration-header">
+                        <i class="fas fa-brain"></i>
+                        <h5>Short Nap (30 min)</h5>
+                    </div>
+                    <p>May enter deep sleep</p>
+                    <ul>
+                        <li>Can cause grogginess</li>
+                        <li>Need time to wake up</li>
+                        <li>Not ideal for quick boost</li>
+                    </ul>
+                </div>
+                <div class="duration-card ${parseInt(napDuration) === 60 ? 'active' : ''}">
+                    <div class="duration-header">
+                        <i class="fas fa-memory"></i>
+                        <h5>Memory Nap (60 min)</h5>
+                    </div>
+                    <p>Includes deep sleep</p>
+                    <ul>
+                        <li>Improves memory</li>
+                        <li>Better for learning</li>
+                        <li>Harder to wake from</li>
+                    </ul>
+                </div>
+                <div class="duration-card ${parseInt(napDuration) === 90 ? 'active' : ''}">
+                    <div class="duration-header">
+                        <i class="fas fa-star"></i>
+                        <h5>Full Cycle (90 min)</h5>
+                    </div>
+                    <p>Complete sleep cycle</p>
+                    <ul>
+                        <li>Best for creativity</li>
+                        <li>Emotional processing</li>
+                        <li>Full refreshment</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="nap-recommendation">
+            <h4><i class="fas fa-lightbulb"></i> Personalized Tips</h4>
+            <ul>
+                ${recommendations.tips.map(tip => `<li>${tip}</li>`).join('')}
+            </ul>
+        </div>
+    `;
+}
