@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nap Calculator with Watches</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4CC9F0;
+            --accent: #7209B7;
+            --background: #0B132B;
+            --card-bg: #1C2541;
+            --text: #F7F7F7;
+            --text-light: #C1C1C1;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary);
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2 i {
+            margin-right: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-light);
+        }
+        
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #2C3E50;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            font-size: 1em;
+        }
+        
+        .time-inputs {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .time-inputs .form-group {
+            flex: 1;
+        }
+        
+        .quality-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .quality-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid transparent;
+            color: var(--text-light);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .quality-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .quality-btn.active {
+            background-color: rgba(76, 201, 240, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .nap-recommendation {
+            margin-bottom: 25px;
+        }
+        
+        .nap-recommendation h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nap-recommendation h4 i {
+            margin-right: 10px;
+        }
+        
+        .nap-recommendation ul {
+            list-style-type: none;
+            padding-left: 15px;
+        }
+        
+        .nap-recommendation li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .nap-recommendation li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+        
+        /* Watch Display Styles */
+        .watches-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .watch {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+        }
+        
+        /* Digital Watch */
+        .digital-watch {
+            background-color: #000;
+            border-radius: 10px;
+            padding: 20px;
+            border: 4px solid #444;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .digital-display {
+            background-color: #222;
+            color: #00FF00;
+            font-family: 'Courier New', monospace;
+            font-size: 2em;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 5px;
+            border: 2px inset #444;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+            letter-spacing: 2px;
+        }
+        
+        /* Quartz Watch */
+        .quartz-watch {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+            background-color: #F7F7F7;
+            border-radius: 50%;
+            border: 15px solid #8B4513;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .quartz-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #FFFFFF;
+            z-index: 1;
+        }
+        
+        .hour-markers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+        }
+        
+        .hour-marker {
+            position: absolute;
+            width: 10px;
+            height: 2px;
+            background-color: #333;
+            left: 50%;
+            top: 50%;
+            transform-origin: 0 0;
+        }
+        
+        .hour-number {
+            position: absolute;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.2em;
+            color: #333;
+            z-index: 2;
+        }
+        
+        .quartz-brand {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 30%;
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            color: #333;
+            font-size: 0.9em;
+            z-index: 2;
+        }
+        
+        .watch-hand {
+            position: absolute;
+            transform-origin: 50% 100%;
+            z-index: 3;
+            left: 50%;
+            background-color: #333;
+        }
+        
+        .hour-hand {
+            width: 6px;
+            height: 60px;
+            border-radius: 3px;
+            top: calc(50% - 60px);
+        }
+        
+        .minute-hand {
+            width: 4px;
+            height: 80px;
+            border-radius: 2px;
+            top: calc(50% - 80px);
+        }
+        
+        .second-hand {
+            width: 2px;
+            height: 90px;
+            border-radius: 1px;
+            top: calc(50% - 90px);
+            background-color: #D00;
+        }
+        
+        .watch-center {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #333;
+            top: calc(50% - 6px);
+            left: calc(50% - 6px);
+            z-index: 4;
+        }
+        
+        /* Watch toggle switch */
+        .watch-toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .toggle-label {
+            margin: 0 10px;
+            color: var(--text-light);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .4s;
+            border-radius: 30px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: var(--primary);
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: rgba(114, 9, 183, 0.4);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+            background-color: var(--accent);
+        }
+        
+        @media (max-width: 768px) {
+            .time-inputs {
+                flex-direction: column;
+            }
+            
+            .watches-container {
+                flex-direction: column;
+            }
+            
+            .quartz-watch {
+                width: 200px;
+                height: 200px;
+                border-width: 10px;
+            }
+            
+            .hour-hand {
+                height: 50px;
+                top: calc(50% - 50px);
+            }
+            
+            .minute-hand {
+                height: 65px;
+                top: calc(50% - 65px);
+            }
+            
+            .second-hand {
+                height: 75px;
+                top: calc(50% - 75px);
+            }
+        }
+
+        .nap-schedule {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .schedule-item:last-child {
+            margin-bottom: 0;
+        }
+        .label {
+            color: var(--text-light);
+        }
+        .value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .sleep-analysis {
+            margin-top: 10px;
+        }
+        .analysis-item {
+            margin-bottom: 15px;
+        }
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        .timing-chart {
+            margin-top: 15px;
+            position: relative;
+        }
+        .timing-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            position: relative;
+            margin-bottom: 5px;
+        }
+        .optimal-zone {
+            position: absolute;
+            height: 100%;
+            background: rgba(76, 201, 240, 0.3);
+            border-radius: 4px;
+        }
+        .current-time {
+            position: absolute;
+            width: 2px;
+            height: 16px;
+            background: var(--accent);
+            top: -4px;
+        }
+        .current-time::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: -4px;
+            left: -3px;
+        }
+        .timing-labels {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-light);
+            font-size: 0.8em;
+        }
+        .nap-durations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .duration-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+        .duration-card.active {
+            background: rgba(76, 201, 240, 0.1);
+            border: 1px solid var(--primary);
+        }
+        .duration-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .duration-header i {
+            color: var(--primary);
+            font-size: 1.2em;
+        }
+        .duration-header h5 {
+            margin: 0;
+            color: var(--text);
+        }
+        .duration-card p {
+            color: var(--text-light);
+            margin: 0 0 10px 0;
+            font-size: 0.9em;
+        }
+        .duration-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .duration-card li {
+            color: var(--text-light);
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .duration-card li:before {
+            content: "•";
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+        }
+        @media (max-width: 768px) {
+            .nap-durations {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Power Nap Calculator with Watches</h1>
+
+        <!-- Watches Section -->
+        <div class="card">
+            <h2><i class="fas fa-clock"></i> Watch Display</h2>
+            
+            <div class="watch-toggle">
+                <span class="toggle-label">Digital</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="watch-toggle">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span class="toggle-label">Quartz</span>
+            </div>
+            
+            <div class="watches-container">
+                <div class="watch digital-watch" id="digital-watch">
+                    <div class="digital-display" id="digital-time">00:00:00</div>
+                </div>
+                
+                <div class="watch quartz-watch" id="quartz-watch" style="display: none;">
+                    <div class="quartz-face"></div>
+                    <div class="quartz-brand">PowerNap</div>
+                    <div class="hour-markers" id="hour-markers"></div>
+                    <div class="watch-hand hour-hand" id="hour-hand"></div>
+                    <div class="watch-hand minute-hand" id="minute-hand"></div>
+                    <div class="watch-hand second-hand" id="second-hand"></div>
+                    <div class="watch-center"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nap Calculator Form -->
+        <div class="card">
+            <h2><i class="fas fa-bed"></i> Nap Calculator</h2>
+            
+            <div class="form-group">
+                <label for="nap-hour">Nap Start Time</label>
+                <div class="time-inputs">
+                    <div class="form-group">
+                        <select id="nap-hour">
+                            <option value="0">12 AM</option>
+                            <option value="1">1 AM</option>
+                            <option value="2">2 AM</option>
+                            <option value="3">3 AM</option>
+                            <option value="4">4 AM</option>
+                            <option value="5">5 AM</option>
+                            <option value="6">6 AM</option>
+                            <option value="7">7 AM</option>
+                            <option value="8">8 AM</option>
+                            <option value="9">9 AM</option>
+                            <option value="10">10 AM</option>
+                            <option value="11">11 AM</option>
+                            <option value="12">12 PM</option>
+                            <option value="13" selected>1 PM</option>
+                            <option value="14">2 PM</option>
+                            <option value="15">3 PM</option>
+                            <option value="16">4 PM</option>
+                            <option value="17">5 PM</option>
+                            <option value="18">6 PM</option>
+                            <option value="19">7 PM</option>
+                            <option value="20">8 PM</option>
+                            <option value="21">9 PM</option>
+                            <option value="22">10 PM</option>
+                            <option value="23">11 PM</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select id="nap-minute">
+                            <option value="0" selected>00</option>
+                            <option value="5">05</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                            <option value="25">25</option>
+                            <option value="30">30</option>
+                            <option value="35">35</option>
+                            <option value="40">40</option>
+                            <option value="45">45</option>
+                            <option value="50">50</option>
+                            <option value="55">55</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="last-night-sleep">Last Night's Sleep (hours)</label>
+                <input type="number" id="last-night-sleep" min="0" max="12" step="0.5" value="7">
+            </div>
+            
+            <div class="form-group">
+                <label>Current Energy Level</label>
+                <div class="quality-selector">
+                    <div class="quality-btn" data-rating="1">Very Low</div>
+                    <div class="quality-btn" data-rating="2">Low</div>
+                    <div class="quality-btn active" data-rating="3">Medium</div>
+                    <div class="quality-btn" data-rating="4">High</div>
+                    <div class="quality-btn" data-rating="5">Very High</div>
+                </div>
+            </div>
+            
+            <button id="calculate-btn">Calculate Optimal Nap</button>
+        </div>
+
+        <!-- Results Section -->
+        <div class="card" id="results-card" style="display: none;">
+            <h2><i class="fas fa-chart-line"></i> Your Nap Recommendation</h2>
+            <div id="nap-visualization"></div>
+        </div>
+    </div>
+
+    <script>
+        const napCalculator = {
+            init() {
+                // Initialize watches
+                this.initWatches();
+                
+                // Set up event listeners
+                document.querySelectorAll('.quality-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelector('.quality-btn.active')?.classList.remove('active');
+                        this.classList.add('active');
+                    });
+                });
+                
+                document.getElementById('calculate-btn').addEventListener('click', () => this.calculateNap());
+                
+                // Update watches every second
+                setInterval(() => this.updateWatches(), 1000);
+            },
+            
+            initWatches() {
+                // Setup watch toggle
+                const toggle = document.getElementById('watch-toggle');
+                const digitalWatch = document.getElementById('digital-watch');
+                const quartzWatch = document.getElementById('quartz-watch');
+                
+                toggle.addEventListener('change', function() {
+                    if (this.checked) {
+                        digitalWatch.style.display = 'none';
+                        quartzWatch.style.display = 'block';
+                    } else {
+                        digitalWatch.style.display = 'block';
+                        quartzWatch.style.display = 'none';
+                    }
+                });
+                
+                // Setup quartz watch hour markers
+                const hourMarkers = document.getElementById('hour-markers');
+                
+                // Create hour numbers
+                for (let i = 1; i <= 12; i++) {
+                    const hourNumber = document.createElement('div');
+                    hourNumber.className = 'hour-number';
+                    hourNumber.textContent = i;
+                    
+                    // Calculate position
+                    const angle = (i * 30) * (Math.PI / 180);
+                    const radius = 90; // Slightly inside the watch face
+                    const x = Math.sin(angle) * radius;
+                    const y = -Math.cos(angle) * radius;
+                    
+                    hourNumber.style.left = `calc(50% + ${x}px - 5px)`;
+                    hourNumber.style.top = `calc(50% + ${y}px - 10px)`;
+                    
+                    hourMarkers.appendChild(hourNumber);
+                    
+                    // Create hour marker ticks
+                    const hourMarker = document.createElement('div');
+                    hourMarker.className = 'hour-marker';
+                    hourMarker.style.transform = `rotate(${i * 30}deg) translateX(100px)`;
+                    hourMarkers.appendChild(hourMarker);
+                }
+                
+                // Create minute ticks
+                for (let i = 0; i < 60; i++) {
+                    if (i % 5 !== 0) { // Skip hour positions
+                        const minuteMarker = document.createElement('div');
+                        minuteMarker.className = 'hour-marker';
+                        minuteMarker.style.width = '5px';
+                        minuteMarker.style.height = '1px';
+                        minuteMarker.style.transform = `rotate(${i * 6}deg) translateX(100px)`;
+                        hourMarkers.appendChild(minuteMarker);
+                    }
+                }
+                
+                // Initial update
+                this.updateWatches();
+            },
+            
+            updateWatches() {
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const seconds = now.getSeconds();
+                
+                // Update digital watch
+                document.getElementById('digital-time').textContent = 
+                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                // Update quartz watch
+                const hourAngle = (hours % 12 + minutes / 60) * 30;
+                const minuteAngle = minutes * 6;
+                const secondAngle = seconds * 6;
+                
+                document.getElementById('hour-hand').style.transform = `translateX(-3px) rotate(${hourAngle}deg)`;
+                document.getElementById('minute-hand').style.transform = `translateX(-2px) rotate(${minuteAngle}deg)`;
+                document.getElementById('second-hand').style.transform = `translateX(-1px) rotate(${secondAngle}deg)`;
+            },
+
+            calculateNap() {
+                const napHour = parseInt(document.getElementById('nap-hour').value);
+                const napMinute = parseInt(document.getElementById('nap-minute').value);
+                const lastNightSleep = parseFloat(document.getElementById('last-night-sleep').value);
+                const currentEnergy = document.querySelector('.quality-btn.active')?.dataset.rating || 3;
+
+                const napTime = new Date();
+                napTime.setHours(napHour, napMinute, 0);
+
+                const recommendations = this.getNapRecommendations(napTime, lastNightSleep, currentEnergy);
+                this.displayResults(recommendations);
+                
+                // Show results card
+                document.getElementById('results-card').style.display = 'block';
+                
+                // Scroll to results
+                document.getElementById('results-card').scrollIntoView({ behavior: 'smooth' });
+            },
+
+            getNapRecommendations(napTime, lastNightSleep, currentEnergy) {
+                const hour = napTime.getHours();
+                const recommendations = {
+                    duration: this.calculateNapDuration(lastNightSleep, currentEnergy),
+                    timing: this.assessNapTiming(hour),
+                    tips: this.getNapTips(lastNightSleep, currentEnergy)
+                };
+
+                return recommendations;
+            },
+
+            calculateNapDuration(lastNightSleep, currentEnergy) {
+                if (lastNightSleep < 6) {
+                    return currentEnergy <= 2 ? '20-30 minutes' : '15-20 minutes';
+                } else if (lastNightSleep < 7) {
+                    return currentEnergy <= 2 ? '15-20 minutes' : '10-15 minutes';
+                } else {
+                    return currentEnergy <= 2 ? '10-15 minutes' : '5-10 minutes';
+                }
+            },
+
+            assessNapTiming(hour) {
+                if (hour >= 13 && hour <= 15) {
+                    return 'Perfect timing! This is the ideal window for a power nap.';
+                } else if (hour >= 10 && hour <= 12) {
+                    return 'Good timing, but try to nap between 1-3 PM for optimal results.';
+                } else if (hour >= 16 && hour <= 18) {
+                    return 'Late afternoon nap. Keep it short to avoid affecting nighttime sleep.';
+                } else {
+                    return 'Consider napping between 1-3 PM for best results.';
+                }
+            },
+
+            getNapTips(lastNightSleep, currentEnergy) {
+                const tips = [];
+                
+                if (lastNightSleep < 6) {
+                    tips.push('Focus on getting better nighttime sleep');
+                    tips.push('Consider a slightly longer nap (20-30 minutes)');
+                } else {
+                    tips.push('Keep your nap short and sweet');
+                }
+
+                if (currentEnergy <= 2) {
+                    tips.push('Find a quiet, dark place for your nap');
+                    tips.push('Set an alarm to avoid oversleeping');
+                }
+
+                tips.push('Avoid napping after 6 PM');
+                tips.push('Stay hydrated before and after your nap');
+                
+                // Add watch-related tips
+                tips.push('Use the watch display to keep track of your nap time');
+                tips.push('Set an alarm on your real watch to wake up on time');
+
+                return tips;
+            },
+
+            displayResults(recommendations) {
+                const visualizationDiv = document.getElementById('nap-visualization');
+                if (!visualizationDiv) return;
+
+                const napHour = parseInt(document.getElementById('nap-hour').value);
+                const napMinute = parseInt(document.getElementById('nap-minute').value);
+                const lastNightSleep = parseFloat(document.getElementById('last-night-sleep').value);
+                const currentEnergy = document.querySelector('.quality-btn.active')?.dataset.rating || 3;
+
+                // Calculate nap end time
+                const napDuration = recommendations.duration.split('-')[0].trim(); // Get first number from duration
+                const endTime = new Date();
+                endTime.setHours(napHour, napMinute + parseInt(napDuration), 0);
+                const endTimeStr = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                // Format start time
+                const startTime = new Date();
+                startTime.setHours(napHour, napMinute, 0);
+                const startTimeStr = startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                visualizationDiv.innerHTML = `
+                    <div class="nap-recommendation">
+                        <h4><i class="fas fa-clock"></i> Nap Schedule</h4>
+                        <div class="nap-schedule">
+                            <div class="schedule-item">
+                                <span class="label">Start Time:</span>
+                                <span class="value">${startTimeStr}</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="label">End Time:</span>
+                                <span class="value">${endTimeStr}</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="label">Duration:</span>
+                                <span class="value">${recommendations.duration}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nap-recommendation">
+                        <h4><i class="fas
