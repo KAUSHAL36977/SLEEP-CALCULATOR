@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="anime-sleep-animation top-animation" style="display: flex; justify-content: center; align-items: flex-end; width: 100%; margin: 1.5rem auto 2.5rem auto; min-height: 240px; z-index: 10;">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnJycDFqbzdudGFiN2IyNXBvNmE2c2Z4bG9mdmxsa3ZhaXBhcHU2NSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/KD8Ldwzx90X9hi9QHW/giphy.gif" alt="Anime Sleep GIF" style="max-width: 340px; width: 100%; height: auto; border-radius: 24px; box-shadow: 0 8px 24px rgba(100,100,200,0.18);" />
+    </div>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-moon logo-icon"></i>
+                <h1>DreamCycle</h1>
+            </div>
+            <p class="subtitle">Optimize your sleep with science-based calculations and personalized recommendations</p>
+        </header>
+        <div class="app-container">
+            <div class="calculator-card">
+                <div class="tabs">
+                    <button class="tab active" data-tab="bedtime">
+                        <i class="fas fa-alarm-clock"></i> Wake Up At
+                    </button>
+                    <button class="tab" data-tab="wakeup">
+                        <i class="fas fa-bed"></i> Bedtime At
+                    </button>
+                    <button class="tab" data-tab="sleep-now">
+                        <i class="fas fa-stopwatch"></i> Sleep Now
+                    </button>
+                    <button class="tab" data-tab="sleep-age">
+                        <i class="fas fa-user"></i> Sleep by Age
+                    </button>
+                    <button class="tab" data-tab="sleep-quality">
+                        <i class="fas fa-chart-line"></i> Sleep Quality
+                    </button>
+                    <button class="tab" data-tab="sleep-cycles">
+                        <i class="fas fa-sync"></i> Sleep Cycles
+                    </button>
+                    <button class="tab" data-tab="sleep-tracking">
+                        <i class="fas fa-chart-bar"></i> Sleep Tracking
+                    </button>
+                    <button class="tab" data-tab="smart-alarm">
+                        <i class="fas fa-bell"></i> Smart Alarm
+                    </button>
+                    <button class="tab" data-tab="sleep-guide">
+                        <i class="fas fa-book"></i> Sleep Guide
+                    </button>
+                    <button class="tab" data-tab="sleep-debt">
+                        <i class="fas fa-calculator"></i> Sleep Debt
+                    </button>
+                    <button class="tab" data-tab="sleep-schedule">
+                        <i class="fas fa-calendar-alt"></i> Sleep Schedule
+                    </button>
+                </div>
+                <div class="tab-content active" id="bedtime-calc">
+                    <div class="form-group">
+                        <label>Select your wake-up time:</label>
+                        <div class="input-group">
+                            <select id="bedtime-hour">
+                                <option value="12">12</option>
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08" selected>08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                            </select>
+                            <select id="bedtime-minute">
+                                <option value="00" selected>00</option>
+                                <option value="05">05</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            <select id="bedtime-ampm">
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Time to fall asleep:</label>
+                        <select id="fall-asleep-time">
+                            <option value="10">10 minutes</option>
+                            <option value="15" selected>15 minutes</option>
+                            <option value="20">20 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                        </select>
+                    </div>
+                    <button id="calc-bedtime">
+                        <i class="fas fa-calculator"></i> Calculate Bedtime
+                    </button>
+                    <div class="results" id="bedtime-results">
+                        <h3 class="results-title">
+                            <i class="fas fa-bed"></i> Optimal Bedtimes
+                        </h3>
+                        <p class="results-description">Wake up refreshed by going to bed at one of these times (24-hour format):</p>
+                        <div class="time-list" id="bedtime-list"></div>
+                    </div>
+                </div>
+                <div class="tab-content" id="wakeup-calc">
+                    <div class="form-group">
+                        <label>Select your bedtime:</label>
+                        <div class="input-group">
+                            <select id="wakeup-hour">
+                                <option value="12">12</option>
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08">08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                            </select>
+                            <select id="wakeup-minute">
+                                <option value="00" selected>00</option>
+                                <option value="05">05</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            <select id="wakeup-ampm">
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Time to fall asleep:</label>
+                        <select id="fall-asleep-time-wake">
+                            <option value="10">10 minutes</option>
+                            <option value="15" selected>15 minutes</option>
+                            <option value="20">20 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                        </select>
+                    </div>
+                    <button id="calc-wakeup">
+                        <i class="fas fa-calculator"></i> Calculate Wake-up Time
+                    </button>
+                    <div class="results" id="wakeup-results">
+                        <h3 class="results-title">
+                            <i class="fas fa-clock"></i> Optimal Wake-up Times
+                        </h3>
+                        <p class="results-description">Feel refreshed by waking up at one of these times (24-hour format):</p>
+                        <div class="time-list" id="wakeup-list"></div>
+                    </div>
+                </div>
+                <div class="tab-content" id="sleep-now-calc">
+                    <div class="form-group">
+                        <label>Time to fall asleep:</label>
+                        <select id="fall-asleep-time-now">
+                            <option value="10">10 minutes</option>
+                            <option value="15" selected>15 minutes</option>
+                            <option value="20">20 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                        </select>
+                    </div>
+                    <button id="calc-sleep-now" class="sleep-now-btn">
+                        <i class="fas fa-moon"></i> Calculate Sleep Now Times
+                    </button>
+                    <div class="results" id="sleep-now-results">
+                        <h3 class="results-title">
+                            <i class="fas fa-clock"></i> Optimal Wake-up Times
+                        </h3>
+                        <p class="results-description">Based on the current time, wake up at (24-hour format):</p>
+                        <div class="time-list" id="sleep-now-list"></div>
+                    </div>
+                </div>
+                <div class="tab-content" id="sleep-age-calc">
+                    <div class="form-group">
+                        <label>Select your age group:</label>
+                        <select id="age-group">
+                            <option value="newborn">Newborn (0-3 months)</option>
+                            <option value="infant">Infant (4-11 months)</option>
+                            <option value="toddler">Toddler (1-2 years)</option>
+                            <option value="preschool">Preschool (3-5 years)</option>
+                            <option value="school">School Age (6-13 years)</option>
+                            <option value="teen">Teen (14-17 years)</option>
+                            <option value="young-adult" selected>Young Adult (18-25 years)</option>
+                            <option value="adult">Adult (26-64 years)</option>
+                            <option value="senior">Senior (65+ years)</option>
+                        </select>
+                    </div>
+                    <button id="calc-age-sleep">
+                        <i class="fas fa-calculator"></i> Get Sleep Recommendations
+                    </button>
+                    <div class="results" id="age-sleep-results">
+                        <h3 class="results-title">
+                            <i class="fas fa-user-clock"></i> Age-Specific Sleep Recommendations
+                        </h3>
+                        <div class="age-recommendations" id="age-recommendations"></div>
+                    </div>
+                </div>
+                <div class="tab-content" id="sleep-quality-calc">
+                    <div class="form-group">
+                        <label>How many hours did you sleep last night?</label>
+                        <select id="sleep-hours">
+                            <option value="4">Less than 4 hours</option>
+                            <option value="5">4-5 hours</option>
+                            <option value="6">5-6 hours</option>
+                            <option value="7">6-7 hours</option>
+                            <option value="8" selected>7-8 hours</option>
+                            <option value="9">8-9 hours</option>
+                            <option value="10">More than 9 hours</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>How would you rate your sleep quality?</label>
+                        <div class="quality-rating">
+                            <button class="quality-btn" data-rating="1"><i class="fas fa-face-frown"></i></button>
+                            <button class="quality-btn" data-rating="2"><i class="fas fa-face-meh"></i></button>
+                            <button class="quality-btn" data-rating="3"><i class="fas fa-face-smile"></i></button>
+                            <button class="quality-btn" data-rating="4"><i class="fas fa-face-grin-stars"></i></button>
+                            <button class="quality-btn" data-rating="5"><i class="fas fa-face-grin-hearts"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Did you wake up during the night?</label>
+                        <select id="wake-ups">
+                            <option value="0">No interruptions</option>
+                            <option value="1">Once</option>
+                            <option value="2">2-3 times</option>
+                            <option value="3">More than 3 times</option>
+                        </select>
+                    </div>
+                    <button id="analyze-sleep-quality">
+                        <i class="fas fa-chart-line"></i> Analyze Sleep Quality
+                    </button>
+                    <div class="results" id="sleep-quality-results">
+                        <h3 class="results-title">
+                            <i class="fas fa-chart-bar"></i> Sleep Quality Analysis
+                        </h3>
+                        <div class="quality-analysis" id="quality-analysis"></div>
+                    </div>
+                </div>
+                <div class="tab-content" id="sleep-cycles-calc">
+                    <div class="form-group">
+                        <label>Your typical sleep duration:</label>
+                        <select id="typical-sleep-duration">
+                            <option value="4">Less than 4 hours</option>
+                            <option value="5">4-5 hours</option>
+                            <option value="6">5-6 hours</option>
+                            <option value="7">6-7 hours</option>
+                            <option value="8" selected>7-8 hours</option>
+                            <option value="9">8-9 hours</option>
+                            <option value="10">More than 9 hours</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Average sleep quality:</label>
+                        <div class="quality-rating">
+                            <button class="quality-btn" data-rating="1"><i class="fas fa-face-frown"></i></button>
+                            <button class="quality-btn" data-rating="2"><i class="fas fa-face-meh"></i></button>
+                            <button class="quality-btn" data-rating="3"><i class="fas fa-face-smile"></i></button>
+                            <button class="quality-btn" data-rating="4"><i class="fas fa-face-grin-stars"></i></button>
+                            <button class="quality-btn" data-rating="5"><i class="fas fa-face-grin-hearts"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Typical number of wake-ups per night:</label>
+                        <select id="typical-wake-ups">
+                            <option value="0">No interruptions</option>
+                            <option value="1">Once</option>
+                            <option value="2">2-3 times</option>
+                            <option value="3">More than 3 times</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Time to fall asleep:</label>
+                        <select id="fall-asleep-time-cycles">
+                            <option value="10">10 minutes</option>
+                            <option value="15" selected>15 minutes</option>
+                            <option value="20">20 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                        </select>
+                    </div>
+                    <button id="analyze-sleep-cycles">
+                        <i class="fas fa-sync"></i> Analyze Sleep Cycles
+                    </button>
+                    <div class="results" id="sleep-cycles-results">
+                        <h3 class="results-title">
+                            <i class="fas fa-sync"></i> Sleep Cycle Analysis
+                        </h3>
+                        <div class="cycle-analysis" id="cycle-analysis"></div>
+                    </div>
+                </div>
+                <div class="tab-content" id="sleep-tracking-calc">
+                    <div class="form-group">
+                        <label>Sleep Start Time:</label>
+                        <div class="input-group">
+                            <select id="sleep-start-hour">
+                                <option value="12">12</option>
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08">08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                            </select>
+                            <select id="sleep-start-minute">
+                                <option value="00" selected>00</option>
+                                <option value="05">05</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            <select id="sleep-start-ampm">
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Sleep End Time:</label>
+                        <div class="input-group">
+                            <select id="sleep-end-hour">
+                                <option value="12">12</option>
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08" selected>08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                            </select>
+                            <select id="sleep-end-minute">
+                                <option value="00" selected>00</option>
+                                <option value="05">05</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            <select id="sleep-end-ampm">
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Sleep Quality:</label>
+                        <div class="quality-rating">
+                            <button class="quality-btn" data-rating="1"><i class="fas fa-face-frown"></i></button>
+                            <button class="quality-btn" data-rating="2"><i class="fas fa-face-meh"></i></button>
+                            <button class="quality-btn" data-rating="3"><i class="fas fa-face-smile"></i></button>
+                            <button class="quality-btn" data-rating="4"><i class="fas fa-face-grin-stars"></i></button>
+                            <button class="quality-btn" data-rating="5"><i class="fas fa-face-grin-hearts"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Wake-ups:</label>
+                        <select id="tracking-wake-ups">
+                            <option value="0">No interruptions</option>
+                            <option value="1">Once</option>
+                            <option value="2">2-3 times</option>
+                            <option value="3">More than 3 times</option>
+                        </select>
+                    </div>
+                    <button id="analyze-sleep-tracking">
+                        <i class="fas fa-chart-bar"></i> Analyze Sleep
+                    </button>
+                    <div class="results" id="sleep-tracking-results">
+                        <h3 class="results-title">
+                            <i class="fas fa-chart-bar"></i> Sleep Analysis
+                        </h3>
+                        <div class="sleep-analysis" id="sleep-analysis"></div>
+                    </div>
+                </div>
+                <div class="tab-content" id="smart-alarm-calc">
+                    <div class="form-group">
+                        <label>Target Wake-up Time:</label>
+                        <div class="input-group">
+                            <select id="alarm-hour">
+                                <option value="12">12</option>
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08" selected>08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                            </select>
+                            <select id="alarm-minute">
+                                <option value="00" selected>00</option>
+                                <option value="05">05</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            <select id="alarm-ampm">
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Wake-up Window:</label>
+                        <select id="wakeup-window">
+                            <option value="15">15 minutes</option>
+                            <option value="20">20 minutes</option>
+                            <option value="30" selected>30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Alarm Type:</label>
+                        <div class="alarm-options">
+                            <button class="alarm-option active" data-type="sound">
+                                <i class="fas fa-music"></i>
+                                <span>Sound</span>
+                            </button>
+                            <button class="alarm-option" data-type="vibration">
+                                <i class="fas fa-vibrate"></i>
+                                <span>Vibration</span>
+                            </button>
+                            <button class="alarm-option" data-type="both">
+                                <i class="fas fa-volume-up"></i>
+                                <span>Both</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Alarm Sound:</label>
+                        <select id="alarm-sound">
+                            <option value="gentle">Gentle Chimes</option>
+                            <option value="nature">Nature Sounds</option>
+                            <option value="piano">Piano Melody</option>
+                            <option value="bell">Soft Bell</option>
+                            <option value="waves">Ocean Waves</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Gradual Volume:</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="gradual-volume" checked>
+                            <label for="gradual-volume"></label>
+                        </div>
+                    </div>
+                    <button id="set-smart-alarm">
+                        <i class="fas fa-bell"></i> Set Smart Alarm
+                    </button>
+                    <div class="results" id="smart-alarm-results">
+                        <h3 class="results-title">
+                            <i class="fas fa-bell"></i> Smart Alarm Settings
+                        </h3>
+                        <div class="alarm-settings" id="alarm-settings"></div>
+                    </div>
+                </div>
+                <div class="tab-content" id="sleep-guide-calc">
+                    <div class="guide-section">
+                        <h3 class="guide-title">
+                            <i class="fas fa-moon"></i> Understanding Sleep Cycles
+                        </h3>
+                        <div class="sleep-stages-grid">
+                            <div class="sleep-stage-card">
+                                <div class="stage-icon n1">
+                                    <i class="fas fa-bed"></i>
+                                </div>
+                                <h4>N1 Stage (Dozing Off)</h4>
+                                <ul>
+                                    <li>1-7 minutes duration</li>
+                                    <li>Light sleep, easy to wake</li>
+                                    <li>Body starts relaxing</li>
+                                    <li>Brain waves slow down</li>
+                                    <li>May experience hypnic jerks</li>
+                                </ul>
+                            </div>
+                            <div class="sleep-stage-card">
+                                <div class="stage-icon n2">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <h4>N2 Stage (Light Sleep)</h4>
+                                <ul>
+                                    <li>50% of total sleep time</li>
+                                    <li>Heart rate decreases</li>
+                                    <li>Body temperature drops</li>
+                                    <li>Memory consolidation</li>
+                                    <li>Less awareness of surroundings</li>
+                                </ul>
+                            </div>
+                            <div class="sleep-stage-card">
+                                <div class="stage-icon n3">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <h4>N3 Stage (Deep Sleep)</h4>
+                                <ul>
+                                    <li>Starts ~40 minutes after falling asleep</li>
+                                    <li>Critical for restoration</li>
+                                    <li>Hormone regulation</li>
+                                    <li>Tissue repair</li>
+                                    <li>Immune system boost</li>
+                                </ul>
+                            </div>
+                            <div class="sleep-stage-card">
+                                <div class="stage-icon rem">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                                <h4>REM Stage (Dream Sleep)</h4>
+                                <ul>
+                                    <li>Lightest sleep stage</li>
+                                    <li>Active brain activity</li>
+                                    <li>Memory and mood regulation</li>
+                                    <li>Dreaming occurs</li>
+                                    <li>Duration increases with each cycle</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="guide-section">
+                        <h3 class="guide-title">
+                            <i class="fas fa-clock"></i> Sleep Duration by Age
+                        </h3>
+                        <div class="age-sleep-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Age Group</th>
+                                        <th>Age Range</th>
+                                        <th>Recommended Hours</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Newborn</td>
+                                        <td>0-3 months</td>
+                                        <td>14-17 hours</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Infant</td>
+                                        <td>4-12 months</td>
+                                        <td>12-16 hours</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Toddler</td>
+                                        <td>1-2 years</td>
+                                        <td>11-14 hours</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Preschool</td>
+                                        <td>3-5 years</td>
+                                        <td>10-13 hours</td>
+                                    </tr>
+                                    <tr>
+                                        <td>School Age</td>
+                                        <td>6-12 years</td>
+                                        <td>9-12 hours</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Teen</td>
+                                        <td>13-18 years</td>
+                                        <td>8-10 hours</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Adult</td>
+                                        <td>18-60 years</td>
+                                        <td>7+ hours</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Older Adult</td>
+                                        <td>61-64 years</td>
+                                        <td>7-9 hours</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Senior</td>
+                                        <td>65+ years</td>
+                                        <td>7-8 hours</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="guide-section">
+                        <h3 class="guide-title">
+                            <i class="fas fa-exclamation-triangle"></i> Effects of Sleep Deprivation
+                        </h3>
+                        <div class="deprivation-grid">
+                            <div class="deprivation-card">
+                                <h4>Short-term Effects</h4>
+                                <ul>
+                                    <li>Fatigue and irritability</li>
+                                    <li>Trouble concentrating</li>
+                                    <li>Slower reaction times</li>
+                                    <li>Impaired judgment</li>
+                                    <li>Daytime sleepiness</li>
+                                    <li>Mood swings</li>
+                                    <li>Memory issues</li>
+                                </ul>
+                            </div>
+                            <div class="deprivation-card">
+                                <h4>Long-term Effects</h4>
+                                <ul>
+                                    <li>Higher risk of obesity</li>
+                                    <li>Heart disease and stroke</li>
+                                    <li>Diabetes</li>
+                                    <li>Cognitive problems</li>
+                                    <li>Memory loss</li>
+                                    <li>Anxiety and depression</li>
+                                    <li>Increased dementia risk</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="guide-section">
+                        <h3 class="guide-title">
+                            <i class="fas fa-heartbeat"></i> What Happens During Sleep
+                        </h3>
+                        <div class="sleep-process-grid">
+                            <div class="process-card">
+                                <i class="fas fa-thermometer-half"></i>
+                                <h4>Body Temperature</h4>
+                                <p>Drops 1-2 degrees to conserve energy</p>
+                            </div>
+                            <div class="process-card">
+                                <i class="fas fa-heart"></i>
+                                <h4>Heart Rate</h4>
+                                <p>Slows during non-REM, increases during REM</p>
+                            </div>
+                            <div class="process-card">
+                                <i class="fas fa-fire"></i>
+                                <h4>Metabolism</h4>
+                                <p>Decreases, affecting hunger hormones</p>
+                            </div>
+                            <div class="process-card">
+                                <i class="fas fa-brain"></i>
+                                <h4>Brain Activity</h4>
+                                <p>Processes emotions and consolidates memories</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content" id="nap-calculator-calc">
+                    <div class="form-group">
+                        <label>When do you want to take your nap?</label>
+                        <div class="input-group">
+                            <select id="nap-hour">
+                                <option value="12">12</option>
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08">08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                            </select>
+                            <select id="nap-minute">
+                                <option value="00" selected>00</option>
+                                <option value="05">05</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            <select id="nap-ampm">
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>How much sleep did you get last night?</label>
+                        <select id="last-night-sleep">
+                            <option value="4">Less than 4 hours</option>
+                            <option value="5">4-5 hours</option>
+                            <option value="6">5-6 hours</option>
+                            <option value="7">6-7 hours</option>
+                            <option value="8" selected>7-8 hours</option>
+                            <option value="9">8-9 hours</option>
+                            <option value="10">More than 9 hours</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>How do you feel right now?</label>
+                        <div class="quality-rating">
+                            <button class="quality-btn" data-rating="1"><i class="fas fa-face-tired"></i></button>
+                            <button class="quality-btn" data-rating="2"><i class="fas fa-face-meh"></i></button>
+                            <button class="quality-btn" data-rating="3"><i class="fas fa-face-smile"></i></button>
+                            <button class="quality-btn" data-rating="4"><i class="fas fa-face-grin-stars"></i></button>
+                            <button class="quality-btn" data-rating="5"><i class="fas fa-face-grin-hearts"></i></button>
+                        </div>
+                    </div>
+                    <button id="calculate-nap">
+                        <i class="fas fa-calculator"></i> Calculate Optimal Nap
+                    </button>
+                    <div class="results" id="nap-results">
+                        <h3 class="results-title">
+                            <i class="fas fa-coffee"></i> Nap Recommendations
+                        </h3>
+                        <div class="nap-analysis" id="nap-analysis"></div>
+                    </div>
+                </div>
+                <div class="tab-content" id="sleep-debt-calc">
+                    <div class="form-group">
+                        <label>How many hours of sleep did you get each night this week?</label>
+                        <div class="sleep-debt-inputs">
+                            <div class="day-input">
+                                <label>Monday</label>
+                                <input type="number" min="0" max="24" step="0.5" class="sleep-hours-input" data-day="monday">
+                            </div>
+                            <div class="day-input">
+                                <label>Tuesday</label>
+                                <input type="number" min="0" max="24" step="0.5" class="sleep-hours-input" data-day="tuesday">
+                            </div>
+                            <div class="day-input">
+                                <label>Wednesday</label>
+                                <input type="number" min="0" max="24" step="0.5" class="sleep-hours-input" data-day="wednesday">
+                            </div>
+                            <div class="day-input">
+                                <label>Thursday</label>
+                                <input type="number" min="0" max="24" step="0.5" class="sleep-hours-input" data-day="thursday">
+                            </div>
+                            <div class="day-input">
+                                <label>Friday</label>
+                                <input type="number" min="0" max="24" step="0.5" class="sleep-hours-input" data-day="friday">
+                            </div>
+                            <div class="day-input">
+                                <label>Saturday</label>
+                                <input type="number" min="0" max="24" step="0.5" class="sleep-hours-input" data-day="saturday">
+                            </div>
+                            <div class="day-input">
+                                <label>Sunday</label>
+                                <input type="number" min="0" max="24" step="0.5" class="sleep-hours-input" data-day="sunday">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Your target sleep hours per night:</label>
+                        <select id="target-sleep-hours">
+                            <option value="7">7 hours</option>
+                            <option value="7.5">7.5 hours</option>
+                            <option value="8" selected>8 hours</option>
+                            <option value="8.5">8.5 hours</option>
+                            <option value="9">9 hours</option>
+                        </select>
+                    </div>
+                    <button id="calculate-sleep-debt">
+                        <i class="fas fa-calculator"></i> Calculate Sleep Debt
+                    </button>
+                    <div class="results" id="sleep-debt-results">
+                        <h3 class="results-title">
+                            <i class="fas fa-calculator"></i> Sleep Debt Analysis
+                        </h3>
+                        <div class="sleep-debt-analysis" id="sleep-debt-analysis"></div>
+                    </div>
+                </div>
+                <div class="tab-content" id="sleep-schedule-calc">
+                    <div class="form-group">
+                        <label>Your typical wake-up time:</label>
+                        <div class="input-group">
+                            <select id="schedule-wake-hour">
+                                <!-- Hours options -->
+                            </select>
+                            <select id="schedule-wake-minute">
+                                <!-- Minutes options -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Your typical bedtime:</label>
+                        <div class="input-group">
+                            <select id="schedule-bed-hour">
+                                <!-- Hours options -->
+                            </select>
+                            <select id="schedule-bed-minute">
+                                <!-- Minutes options -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Days to optimize:</label>
+                        <div class="schedule-days">
+                            <label class="day-checkbox">
+                                <input type="checkbox" checked data-day="monday"> Mon
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" checked data-day="tuesday"> Tue
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" checked data-day="wednesday"> Wed
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" checked data-day="thursday"> Thu
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" checked data-day="friday"> Fri
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" data-day="saturday"> Sat
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" data-day="sunday"> Sun
+                            </label>
+                        </div>
+                    </div>
+                    <button id="optimize-schedule">
+                        <i class="fas fa-magic"></i> Optimize Sleep Schedule
+                    </button>
+                    <div class="results" id="schedule-results">
+                        <h3 class="results-title">
+                            <i class="fas fa-calendar-alt"></i> Optimized Sleep Schedule
+                        </h3>
+                        <div class="schedule-analysis" id="schedule-analysis"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="nap-calculator-container">
+                <div class="nap-calculator-header">
+                    <h2><i class="fas fa-coffee"></i> Nap Calculator</h2>
+                    <p>Find the perfect time for your power nap</p>
+                    <div class="watch-display">00:00:00</div>
+                </div>
+                <div class="form-group">
+                    <label>When do you want to take your nap?</label>
+                    <div class="input-group">
+                        <select id="nap-time">
+                            <option value="13:00">1:00 PM</option>
+                            <option value="13:30">1:30 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="14:30">2:30 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="15:30">3:30 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>How much sleep did you get last night?</label>
+                    <select id="last-sleep">
+                        <option value="4">Less than 4 hours</option>
+                        <option value="5">4-5 hours</option>
+                        <option value="6">5-6 hours</option>
+                        <option value="7">6-7 hours</option>
+                        <option value="8" selected>7-8 hours</option>
+                        <option value="9">8-9 hours</option>
+                        <option value="10">More than 9 hours</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Current energy level (1-10):</label>
+                    <input type="range" id="energy-level" min="1" max="10" value="5" class="energy-slider">
+                    <div class="energy-labels">
+                        <span>Exhausted</span>
+                        <span>Energized</span>
+                    </div>
+                </div>
+                <button id="calc-nap" class="calculate-btn">
+                    <i class="fas fa-calculator"></i> Calculate Optimal Nap
+                </button>
+                <div class="results" id="nap-recommendations">
+                    <!-- Nap recommendations will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="theme-toggle" id="theme-toggle" data-tooltip="Toggle Dark/Light Mode">
+        <i class="fas fa-moon"></i>
+    </div>
+    <script src="js/sleep-calculator.js"></script>
+    <script src="js/nap-calculator.js"></script>
+</body>
+</html> 
